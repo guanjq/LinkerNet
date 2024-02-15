@@ -137,4 +137,3 @@ test_*
 ckpts
 output*
 logs/
-*.ipynb
