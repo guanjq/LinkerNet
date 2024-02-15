@@ -1,0 +1,20 @@
+dataset:
+  name: zinc
+  path: ./data/zinc_difflinker
+  version: full
+  index_name: index_full.pkl
+  max_num_atoms: 30
+
+model:
+  checkpoint: ckpts/zinc_model.pt
+
+sample:
+  seed: 2022
+  num_samples: 100
+  num_atoms: ref
+  guidance_opt:
+#  num_steps: 100
+#  energy_drift:
+#    - type: frag_link_prox
+#      min_d: 1.2
+#      max_d: 1.9

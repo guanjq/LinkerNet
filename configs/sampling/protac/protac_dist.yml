@@ -1,0 +1,28 @@
+dataset:
+  name: protac
+  path: ./data/protac
+  version: v1
+  split_mode: warhead  # [warhead, ligase, random]
+  index_name: 3d_index.pkl
+  max_num_atoms: 70
+
+model:
+  checkpoint: ckpts/protac_model.pt
+
+sample:
+  seed: 2022
+  num_samples: 100
+  num_atoms: prior # [ref, prior]
+  cand_bond_mask: True
+  guidance_opt:
+#    - type: anchor_prox
+#      update: frag_rot
+#      min_d: 1.2
+#      max_d: 1.9
+#      decay: False
+    - type: frag_distance
+      mode: frag_center_distance
+      constraint_mode: dynamic  # [dynamic, const]
+      sigma: 0.2
+      min_d:
+      max_d:

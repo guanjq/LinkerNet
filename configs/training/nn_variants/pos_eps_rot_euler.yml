@@ -1,0 +1,82 @@
+dataset:
+  name: zinc
+  path: ./data/zinc_difflinker
+  version: full  # [tiny, full]
+  index_name: index_full.pkl
+
+model:
+  num_steps: 500
+  node_emb_dim: 256
+  edge_emb_dim: 64
+  time_emb_type: plain
+  time_emb_dim: 1
+  time_emb_scale: 1000
+
+  train_frag_rot: True
+  train_frag_pos: True
+  train_link: True
+  train_bond: True
+
+  frag_pos_prior:
+  known_anchor: False
+  known_linker_bond: False
+  rel_geometry: two_pos_and_rot
+
+  diffusion:
+    trans_rot_opt:
+      sche_type: cosine
+      s: 0.01
+    trans_pos_opt:
+      sche_type: cosine
+      s: 0.01
+    trans_link_pos_opt:
+      sche_type: cosine
+      s: 0.01
+    trans_link_cls_opt:
+      sche_type: cosine
+      s: 0.01
+    trans_link_bond_opt:
+      sche_type: cosine
+      s: 0.01
+
+  eps_net:
+    net_type: node_edge_net
+    encoder:
+      num_blocks: 6
+      cutoff: 15.
+      use_gate: True
+      num_gaussians: 20
+      expansion_mode: exp
+    tr_output_type: invariant_eps
+    rot_output_type: euler_equation
+    output_n_heads: 8
+    separate_att: True
+    sym_force: False
+
+train:
+  seed: 2023
+  loss_weights:
+    frag_rot: 1.0
+    frag_pos: 1.0
+    link_pos: 1.0
+    link_cls: 100.0
+    link_bond: 100.0
+
+  batch_size: 64
+  num_workers: 8
+  n_acc_batch: 1
+  max_iters: 500000
+  val_freq: 2000
+  pos_noise_std: 0.05
+  max_grad_norm: 50.0
+  optimizer:
+    type: adamw
+    lr: 5.e-4
+    weight_decay: 1.e-8
+    beta1: 0.99
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.6
+    patience: 10
+    min_lr: 1.e-6

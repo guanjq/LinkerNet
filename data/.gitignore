@@ -1,0 +1,5 @@
+#zinc_3dlinker/*.json
+#zinc_3dlinker/smi_train.txt
+#protac/protac.sdf
+zinc_difflinker/index_full.pkl
+!.gitignore
