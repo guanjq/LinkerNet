@@ -73,3 +73,14 @@ We have also provided the sampling results in the same link.
 
 ## Evaluation
     python scripts/eval_protac.py {SAMPLE_RESULT_DIR}
+
+
+## Citation
+```
+@inproceedings{guan2023linkernet,
+  title={LinkerNet: Fragment Poses and Linker Co-Design with 3D Equivariant Diffusion},
+  author={Guan, Jiaqi and Peng, Xingang and Jiang, PeiQi and Luo, Yunan and Peng, Jian and Ma, Jianzhu},
+  booktitle={Thirty-seventh Conference on Neural Information Processing Systems},
+  year={2023}
+}
+```
