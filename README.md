@@ -47,6 +47,8 @@ We have provided all data files related to PROTAC-DB dataset in this repo.
 python scripts/prepare_data.py --raw_path data/protac/index.pkl --dest data/protac/3d_index.pkl
 ```
 
+Note that RDKit version may influence the PROTAC-DB dataset processing and splitting. We provided the processed data and split file [here](https://drive.google.com/drive/folders/1Nt37DO1PYwPNM0_uF2Zzz4QxWD3v8pF6?usp=drive_link)
+
 ### ZINC
 
 The raw ZINC data are same as [DiffLinker](https://zenodo.org/records/7121271).

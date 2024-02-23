@@ -29,6 +29,8 @@ if __name__ == '__main__':
     parser.add_argument('--outdir', type=str, default='./outputs_test')
     parser.add_argument('--tag', type=str, default='')
     parser.add_argument('--save_traj', type=eval, default=False)
+    parser.add_argument('--cand_anchors_mode', type=str, default='k-hop', choices=['k-hop', 'exact'])
+    parser.add_argument('--cand_anchors_k', type=int, default=2)
     args = parser.parse_args()
     RDLogger.DisableLog('rdApp.*')
 
@@ -56,7 +58,7 @@ if __name__ == '__main__':
                                              known_cand_anchors=config.sample.get('cand_bond_mask', False))
     init_transform = Compose([
         atom_featurizer,
-        trans.SelectCandAnchors(mode='k-hop', k=2),
+        trans.SelectCandAnchors(mode=args.cand_anchors_mode, k=args.cand_anchors_k),
         graph_builder,
         trans.StackFragLocalPos(max_num_atoms=config.dataset.get('max_num_atoms', 30)),
         trans.RelativeGeometry(mode=cfg_model.get('rel_geometry', 'distance_and_two_rot'))
@@ -65,11 +67,18 @@ if __name__ == '__main__':
 
     # Datasets and loaders
     logger.info('Loading dataset...')
-    dataset, subsets = get_linker_dataset(
-        cfg=config.dataset,
-        transform_map={'train': None, 'val': test_transform, 'test': test_transform}
-    )
-    test_set = subsets[args.subset]
+    if config.dataset.split_mode == 'full':
+        dataset = get_linker_dataset(
+            cfg=config.dataset,
+            transform_map=test_transform
+        )
+        test_set = dataset
+    else:
+        dataset, subsets = get_linker_dataset(
+            cfg=config.dataset,
+            transform_map={'train': None, 'val': test_transform, 'test': test_transform}
+        )
+        test_set = subsets[args.subset]
     logger.info(f'Test: {len(test_set)}')
 
     FOLLOW_BATCH = ['edge_type']

@@ -81,9 +81,11 @@ class LinkerDataset(Dataset):
         if self.split_mode is None:
             self.split_path = os.path.join(os.path.dirname(self.raw_path),
                                            os.path.basename(self.raw_path) + f'_{version}_split.pt')
-        else:
+        elif self.split_mode != 'full':
             self.split_path = os.path.join(os.path.dirname(self.raw_path),
                                            os.path.basename(self.raw_path) + f'_{version}_{self.split_mode}_split.pt')
+        else:
+            self.split_path = None
 
         self.transform = transform
         # self.mode = mode
@@ -95,11 +97,12 @@ class LinkerDataset(Dataset):
             self._process()
         print('Load dataset from %s' % self.processed_path)
 
-        if not os.path.exists(self.split_path):
-            print(f'{self.split_path} do not exist, begin splitting data')
-            self._split_dataset()
-        print('Load split file from %s' % self.split_path)
-        self.split = torch.load(self.split_path)
+        if self.split_path is not None:
+            if not os.path.exists(self.split_path):
+                print(f'{self.split_path} do not exist, begin splitting data')
+                self._split_dataset()
+            print('Load split file from %s' % self.split_path)
+            self.split = torch.load(self.split_path)
 
     def _connect_db(self):
         """
@@ -260,9 +263,9 @@ class LinkerDataset(Dataset):
                 readonly=False,  # Writable
             )
             with db.begin(write=True, buffers=True) as txn:
-                for data in tqdm(data_list, dynamic_ncols=True, desc='Write to LMDB'):
+                for idx, data in enumerate(tqdm(data_list, dynamic_ncols=True, desc='Write to LMDB')):
                     txn.put(
-                        key=f'{num_data:08d}'.encode(),
+                        key=f'{idx:08d}'.encode(),
                         value=pickle.dumps(data)
                     )
             db.close()
